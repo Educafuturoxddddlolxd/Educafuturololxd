@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>English Easy: aprende inglés</title>
+<style>
+:root{--bg:#fbf6ee;--card:#fff;--tx:#1f2a37;--mu:#6b7280;--pr:#0f766e;--prt:#fff;--ac:#f59e0b;--ok:#15803d;--okb:#dcfce7;--bad:#b91c1c;--badb:#fee2e2;--bd:#e7dfd1;--tipb:#fef3c7;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10201f;--card:#182b2a;--tx:#eef6f4;--mu:#9bb3af;--pr:#2dd4bf;--prt:#06201d;--ok:#4ade80;--okb:#12351f;--bad:#f87171;--badb:#3b1616;--bd:#27413f;--tipb:#3a2f10}}
+:root[data-theme="dark"]{--bg:#10201f;--card:#182b2a;--tx:#eef6f4;--mu:#9bb3af;--pr:#2dd4bf;--prt:#06201d;--ok:#4ade80;--okb:#12351f;--bad:#f87171;--badb:#3b1616;--bd:#27413f;--tipb:#3a2f10}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;line-height:1.5}
+#app{max-width:560px;margin:0 auto;padding:16px 16px 110px}
+h1{font-size:2rem;margin:.2em 0;letter-spacing:-.02em}
+h2{font-size:1.4rem;margin:.4em 0}
+.mu{color:var(--mu);margin:.2em 0 .8em}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:16px;margin:12px 0}
+.center{text-align:center}
+.big{font-size:4.5rem;line-height:1.1}
+.ipa{font-family:"Lucida Sans Unicode","Segoe UI",sans-serif;font-size:1.3rem;color:var(--pr);font-weight:700}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;margin:10px 0;font:inherit;font-weight:700;font-size:1.05rem;background:var(--pr);color:var(--prt);cursor:pointer}
+.btn.sec{background:transparent;color:var(--pr);border:2px solid var(--pr)}
+.btn:focus-visible,.opt:focus-visible,nav button:focus-visible,.lesson:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.opt{display:block;width:100%;text-align:left;border:2px solid var(--bd);background:var(--card);color:var(--tx);border-radius:14px;padding:14px;margin:8px 0;font:inherit;font-size:1.05rem;cursor:pointer}
+.opt.ok{border-color:var(--ok);background:var(--okb)}
+.opt.bad{border-color:var(--bad);background:var(--badb)}
+.fb{padding:12px;border-radius:12px;margin:10px 0;background:var(--tipb)}
+.fb.ok{background:var(--okb)}.fb.bad{background:var(--badb)}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.x{border:0;background:var(--card);color:var(--tx);border-radius:50%;width:38px;height:38px;font-size:1rem;cursor:pointer;border:1px solid var(--bd)}
+.pb{flex:1;height:12px;background:var(--bd);border-radius:8px;overflow:hidden}
+.pb i{display:block;height:100%;background:var(--pr);border-radius:8px;transition:width .3s}
+.step{display:flex;gap:12px;align-items:center;margin:8px 0}
+.step span{flex:none;width:34px;height:34px;border-radius:50%;background:var(--ac);color:#1f2a37;display:grid;place-items:center;font-weight:700}
+.lesson{display:flex;gap:14px;align-items:center;cursor:pointer;width:100%;text-align:left;font:inherit;color:var(--tx)}
+.lesson .em{font-size:2rem}
+.lesson small{color:var(--mu)}
+.tip{background:var(--tipb);border-radius:12px;padding:12px;margin-top:12px}
+.ex{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--bd)}
+.ex:last-child{border:0}
+.snd{flex:none;border:0;background:var(--pr);color:var(--prt);border-radius:50%;width:42px;height:42px;font-size:1.1rem;cursor:pointer}
+.sk{margin:10px 0}
+.sk .pb{height:14px;margin-top:4px}
+.msgs{display:flex;flex-direction:column;gap:10px;margin:12px 0}
+.m{max-width:85%;padding:10px 14px;border-radius:16px}
+.m.bot{background:var(--card);border:1px solid var(--bd);align-self:flex-start}
+.m.me{background:var(--pr);color:var(--prt);align-self:flex-end}
+.m small{display:block;color:var(--mu);margin-top:2px}
+.inp{display:flex;gap:8px}
+.inp input{flex:1;min-width:0;padding:12px;border-radius:12px;border:2px solid var(--bd);background:var(--card);color:var(--tx);font:inherit}
+.inp button{width:52px;border:0;border-radius:12px;background:var(--pr);color:var(--prt);font-size:1.2rem;cursor:pointer}
+.mic{display:block;margin:14px auto 4px;width:84px;height:84px;border-radius:50%;border:0;background:var(--ac);font-size:2rem;cursor:pointer;color:#1f2a37}
+.mic.on{animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.1)}}
+@media(prefers-reduced-motion:reduce){.mic.on{animation:none}}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;border:0;background:none;color:var(--mu);padding:10px 4px;font:inherit;font-size:.85rem;cursor:pointer}
+nav button i{display:block;font-style:normal;font-size:1.5rem}
+nav button.on{color:var(--pr);font-weight:700}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<nav>
+<button data-t="home" class="on" onclick="nav('home')"><i>🏠</i>Inicio</button>
+<button data-t="chat" onclick="nav('chat')"><i>🎙️</i>Conversar</button>
+<button data-t="prog" onclick="nav('prog')"><i>📊</i>Mi progreso</button>
+</nav>
+<script>
+const $=s=>document.querySelector(s);
+const sh=a=>[...a].sort(()=>Math.random()-.5);
+const norm=s=>s.toLowerCase().replace(/[^a-z ]/g,"").trim();
+const SK={vocab:"Vocabulario",listening:"Comprensión auditiva",grammar:"Gramática",pron:"Pronunciación"};
+const TIPS={vocab:"Repasa las tarjetas y di cada palabra en voz alta.",listening:"Escucha cada palabra tres veces antes de contestar.",grammar:"Relee la regla y lee los ejemplos con su fonética.",pron:"Escucha el modelo, imita la posición de la boca y repite despacio."};
+let st={done:{},sk:{},chats:0};
+try{st=Object.assign(st,JSON.parse(localStorage.getItem("ee1")||"{}"))}catch(e){}
+const save=()=>{try{localStorage.setItem("ee1",JSON.stringify(st))}catch(e){}};
+
+/* Lecciones: [inglés, IPA, español, imagen] */
+const L=[
+{t:"Saludos",e:"👋",w:[["Hello","/həˈloʊ/","Hola","👋"],["Good morning","/ɡʊd ˈmɔːrnɪŋ/","Buenos días","🌅"],["Thank you","/ˈθæŋk juː/","Gracias","🙏"],["Goodbye","/ɡʊdˈbaɪ/","Adiós","🚪"]],
+ g:{t:"Verbo TO BE: I am…",r:"Para decir quién eres usa <b>I am</b> (yo soy / estoy). La forma corta es <b>I’m</b>.",ex:[["I am Ana.","/aɪ æm ˈænə/","Yo soy Ana."],["I’m fine, thanks.","/aɪm faɪn θæŋks/","Estoy bien, gracias."]],ph:"La <b>th</b> de “thanks” no es “t”: pon la punta de la lengua entre los dientes y sopla suave.",q:[["I ___ Ana.",["am","is","are"],"am"],["___ morning!",["Good","Well","Nice"],"Good"]]}},
+{t:"Comida",e:"🍎",w:[["Apple","/ˈæpəl/","Manzana","🍎"],["Water","/ˈwɔːtər/","Agua","💧"],["Bread","/brɛd/","Pan","🍞"],["Chicken","/ˈtʃɪkɪn/","Pollo","🍗"]],
+ g:{t:"I like / I don’t like",r:"Usa <b>I like</b> + cosa. Para negar usa <b>I don’t like</b> (nunca “I no like”).",ex:[["I like apples.","/aɪ laɪk ˈæpəlz/","Me gustan las manzanas."],["I don’t like bread.","/aɪ doʊnt laɪk brɛd/","No me gusta el pan."]],ph:"En <b>like</b> el sonido /aɪ/ es un diptongo: una “a” que se desliza hacia “i”.",q:[["I ___ like water.",["don’t","no","not"],"don’t"],["I ___ chicken.",["like","likes","liking"],"like"]]}},
+{t:"Rutina diaria",e:"⏰",w:[["Wake up","/weɪk ʌp/","Despertar","⏰"],["Work","/wɜːrk/","Trabajar","💼"],["Eat","/iːt/","Comer","🍽️"],["Sleep","/sliːp/","Dormir","😴"]],
+ g:{t:"He / She + verbo con -s",r:"Con <b>he, she, it</b> el verbo lleva <b>-s</b>: she work<b>s</b>. Con I, you, we, they no.",ex:[["She works every day.","/ʃi wɜːrks ˈɛvri deɪ/","Ella trabaja todos los días."],["I sleep at ten.","/aɪ sliːp æt tɛn/","Yo duermo a las diez."]],ph:"La <b>-s</b> final suena /s/ en “works” /wɜːrks/. ¡No la omitas al hablar!",q:[["She ___ every day.",["works","work","working"],"works"],["I ___ at seven.",["wake up","wakes up","waking up"],"wake up"]]}}
+];
+const TOTAL=15; let S=null,CH=null;
+
+/* Voz */
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+function listen(ok,fail){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){fail();return}
+ try{const r=new SR();r.lang="en-US";r.onresult=e=>ok(e.results[0][0].transcript);r.onerror=fail;r.start()}catch(e){fail()}}
+
+const R=h=>{$("#app").innerHTML=h;window.scrollTo(0,0)};
+const pb=p=>`<div class="pb"><i style="width:${Math.round(p*100)}%"></i></div>`;
+const top=p=>`<div class="top"><button class="x" aria-label="Salir" onclick="nav('home')">✕</button>${pb(p)}</div>`;
+function nav(t){document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t==t));speechSynthesis&&speechSynthesis.cancel();({home,chat:chatStart,prog})[t]()}
+
+/* Inicio */
+function home(){
+ let n=L.findIndex((_,i)=>st.done[i]==null);if(n<0)n=0;
+ R(`<h1>Hello! 👋</h1><p class="mu">Aprende inglés paso a paso. Es muy fácil:</p>
+ <div class="card"><div class="step"><span>1</span><div><b>Aprende</b><br>Mira, escucha y lee la fonética.</div></div>
+ <div class="step"><span>2</span><div><b>Practica</b><br>Una actividad corta con voz.</div></div>
+ <div class="step"><span>3</span><div><b>Mejora</b><br>Al final ves tus fortalezas y debilidades.</div></div></div>
+ <button class="btn" onclick="start(${n})">${st.done[n]==null?"Empezar":"Repetir"}: ${L[n].t}</button>
+ <h2>Todas las lecciones</h2>
+ ${L.map((l,i)=>`<button class="card lesson" onclick="start(${i})"><span class="em">${l.e}</span><span><b>${l.t}</b><br><small>${st.done[i]!=null?"✅ Mejor resultado: "+st.done[i]+"%":"Sin empezar"}</small></span></button>`).join("")}
+ <button class="card lesson" onclick="nav('chat')"><span class="em">🎙️</span><span><b>Conversa con tu tutor</b><br><small>Habla o escribe en inglés</small></span></button>`)}
+
+/* Lección */
+function start(i){S={i,qs:build(i),k:0,res:[]};learn(0)}
+function build(i){const l=L[i],all=l.w.map(w=>w[0]),qs=[];
+ l.w.forEach(w=>qs.push({sk:"vocab",p:`¿Cómo se dice “${w[2]}” en inglés?`,big:w[3],o:sh([w[0],...sh(all.filter(x=>x!=w[0])).slice(0,2)]),a:w[0],w:w[0]}));
+ sh(l.w).slice(0,2).forEach(w=>qs.push({sk:"listening",p:"Escucha y elige el significado",au:w[0],o:sh([w[2],...sh(l.w.map(x=>x[2]).filter(x=>x!=w[2])).slice(0,2)]),a:w[2],w:w[0]}));
+ l.g.q.forEach(q=>qs.push({sk:"grammar",p:q[0],o:sh(q[1]),a:q[2],w:q[2]}));
+ sh(l.w).slice(0,2).forEach(w=>qs.push({sk:"pron",w:w[0],ipa:w[1],es:w[2],big:w[3]}));
+ return qs}
+function learn(k){const w=L[S.i].w[k];
+ R(`${top(k/TOTAL)}<div class="card center"><p class="mu">Palabra ${k+1} de 4</p><div class="big">${w[3]}</div><h2>${w[0]}</h2><div class="ipa">${w[1]}</div><p class="mu">${w[2]}</p>
+ <button class="btn sec" onclick="speak(L[S.i].w[${k}][0])">🔊 Escuchar</button></div>
+ <button class="btn" onclick="${k<3?`learn(${k+1})`:"gram()"}">Siguiente →</button>`);speak(w[0])}
+function gram(){const g=L[S.i].g;
+ R(`${top(4/TOTAL)}<h2>${g.t}</h2><div class="card"><p>${g.r}</p>
+ ${g.ex.map((e,j)=>`<div class="ex"><div><b>${e[0]}</b><br><span class="ipa" style="font-size:1rem">${e[1]}</span><br><span class="mu">${e[2]}</span></div><button class="snd" aria-label="Escuchar" onclick="speak(L[S.i].g.ex[${j}][0])">🔊</button></div>`).join("")}
+ <div class="tip">🗣️ <b>Fonética:</b> ${g.ph}</div></div>
+ <button class="btn" onclick="showQ()">Ir a practicar →</button>`)}
+function showQ(){const q=S.qs[S.k],p=(5+S.k)/TOTAL,n=`${S.k+1}/${S.qs.length}`;
+ if(q.sk=="pron"){
+  R(`${top(p)}<div class="card center"><p class="mu">${n} · Pronunciación</p><div class="big">${q.big}</div><h2>${q.w}</h2><div class="ipa">${q.ipa}</div><p class="mu">${q.es}</p>
+  <button class="btn sec" onclick="speak(S.qs[S.k].w)">🔊 Escuchar el modelo</button>
+  <button class="btn" id="mb" onclick="say()">🎤 Toca y di la palabra</button></div><div id="fb"></div>`);return}
+ R(`${top(p)}<div class="card center"><p class="mu">${n} · ${SK[q.sk]}</p>${q.big?`<div class="big">${q.big}</div>`:""}<h2>${q.p}</h2>
+ ${q.au?`<button class="btn sec" onclick="speak(S.qs[S.k].au)">🔊 Escuchar otra vez</button>`:""}</div>
+ ${q.o.map((o,j)=>`<button class="opt" onclick="ans(${j})">${o}</button>`).join("")}<div id="fb"></div>`);
+ if(q.au)speak(q.au)}
+function fbShow(ok,msg){$("#fb").innerHTML=`<div class="fb ${ok?"ok":"bad"}">${msg}</div><button class="btn" onclick="nextQ()">Continuar →</button>`}
+function rec(ok){const q=S.qs[S.k];S.res.push({sk:q.sk,ok,w:q.w})}
+function ans(j){const q=S.qs[S.k],ok=q.o[j]==q.a;
+ document.querySelectorAll(".opt").forEach((b,x)=>{b.disabled=true;if(q.o[x]==q.a)b.classList.add("ok");else if(x==j)b.classList.add("bad")});
+ rec(ok);fbShow(ok,ok?"✅ ¡Correcto!":`❌ La respuesta era “${q.a}”.`)}
+function say(){const q=S.qs[S.k];$("#mb").textContent="🎧 Escuchando… habla ahora";
+ listen(t=>{const ok=norm(t).includes(norm(q.w));rec(ok);fbShow(ok,ok?"✅ ¡Muy bien! Te entendí claro.":`🔁 Escuché “${t}”. Escucha el modelo y compara los sonidos.`)},
+ ()=>{$("#fb").innerHTML=`<div class="fb">No pude usar el micrófono. Tú decides: ¿cómo te sonó?</div><button class="btn" onclick="self(true)">😊 Lo dije bien</button><button class="btn sec" onclick="self(false)">😕 Necesito practicar</button>`})}
+function self(ok){rec(ok);fbShow(ok,ok?"👍 ¡Genial!":"💪 ¡Sigue practicando, vas bien!")}
+function nextQ(){S.k++;S.k<S.qs.length?showQ():finish()}
+
+/* Feedback final */
+function finish(){const by={};S.res.forEach(r=>{by[r.sk]=by[r.sk]||[0,0];by[r.sk][1]++;if(r.ok)by[r.sk][0]++;
+  st.sk[r.sk]=st.sk[r.sk]||[0,0];st.sk[r.sk][1]++;if(r.ok)st.sk[r.sk][0]++});
+ const all=S.res.length,good=S.res.filter(r=>r.ok).length,tot=Math.round(good/all*100);
+ st.done[S.i]=Math.max(st.done[S.i]||0,tot);save();
+ const ks=Object.keys(by),pc=k=>Math.round(by[k][0]/by[k][1]*100);
+ const fort=ks.filter(k=>pc(k)>=80),deb=ks.filter(k=>pc(k)<80);
+ const miss=[...new Set(S.res.filter(r=>!r.ok).map(r=>r.w))];
+ R(`<div class="card center"><div class="big">${tot>=80?"🏆":tot>=50?"👍":"💪"}</div><h1>${tot}%</h1><p class="mu">${tot>=80?"¡Excelente trabajo!":tot>=50?"¡Buen avance!":"¡Cada intento te hace mejor!"}</p></div>
+ <div class="card"><b>Tus habilidades</b>${ks.map(k=>`<div class="sk">${SK[k]} · ${pc(k)}%${pb(pc(k)/100)}</div>`).join("")}</div>
+ <div class="card"><b>💪 Fortalezas</b>${fort.length?fort.map(k=>`<p>✔ Dominas <b>${SK[k].toLowerCase()}</b> (${pc(k)}%).</p>`).join(""):"<p>Todavía estás empezando: ¡completaste la actividad y eso cuenta!</p>"}</div>
+ <div class="card"><b>🎯 Debilidades por mejorar</b>${deb.length?deb.map(k=>`<p>• <b>${SK[k]}</b>: ${TIPS[k]}</p>`).join(""):"<p>¡No hay debilidades en esta lección!</p>"}${miss.length?`<div class="tip">Repasa: ${miss.join(", ")}</div>`:""}</div>
+ ${S.i<L.length-1?`<button class="btn" onclick="start(${S.i+1})">Siguiente lección →</button>`:""}
+ <button class="btn sec" onclick="start(${S.i})">Repetir lección</button><button class="btn sec" onclick="nav('home')">Volver al inicio</button>`)}
+
+/* Chat con tutor */
+const Q=[["Hi! What’s your name?","¡Hola! ¿Cómo te llamas?"],["Where are you from?","¿De dónde eres?"],["What do you like to eat?","¿Qué te gusta comer?"],["What do you do every day?","¿Qué haces cada día?"],["Why are you learning English?","¿Por qué aprendes inglés?"]];
+const RULES=[[/\bi am agree\b/i,"Di “I agree”, sin “am”."],[/\bi have \w+ years/i,"Para la edad usa “I am 25 years old”."],[/\bi no (like|know|speak|eat)\b/i,"Para negar usa “I don’t …”."],[/\b(he|she) (go|like|eat|work|have|live|play)\b/i,"Con he/she agrega -s: “she works”."],[/\b(soy|porque|pero|me gusta)\b/i,"Intenta responder solo en inglés."]];
+function add(c,t,es){const d=document.createElement("div");d.className="m "+c;d.textContent=t;if(es){const s=document.createElement("small");s.textContent=es;d.appendChild(s)}$("#msgs").appendChild(d);d.scrollIntoView({block:"nearest"})}
+function chatStart(){CH={n:0,words:0,fix:[],short:0};
+ R(`<h1>Conversación 🎙️</h1><p class="mu">1. Escucha la pregunta. 2. Toca el micrófono y responde en inglés. 3. Si no puedes hablar, escribe abajo.</p>
+ <div class="msgs" id="msgs"></div>
+ <button class="mic" id="mic" aria-label="Hablar" onclick="micChat()">🎤</button><p class="center mu" id="ms">Toca para hablar</p>
+ <div class="inp"><input id="ti" placeholder="O escribe tu respuesta aquí…" onkeydown="if(event.key=='Enter')sendT()"><button aria-label="Enviar" onclick="sendT()">➤</button></div>`);tutor()}
+function tutor(){const q=Q[CH.n];add("bot",q[0],q[1]);speak(q[0])}
+function micChat(){const m=$("#mic");m.classList.add("on");$("#ms").textContent="Escuchando… habla ahora";
+ const stop=()=>m.classList.remove("on");
+ listen(t=>{stop();$("#ms").textContent="Toca para hablar";userSay(t)},()=>{stop();$("#ms").textContent="No pude usar el micrófono. Escribe tu respuesta ⌨️"})}
+function sendT(){const i=$("#ti");userSay(i.value);i.value=""}
+function userSay(t){t=t.trim();if(!t||CH.n>=Q.length)return;add("me",t);
+ const w=t.split(/\s+/).length;CH.words+=w;if(w<3)CH.short++;
+ const f=RULES.filter(r=>r[0].test(t)).map(r=>r[1]);CH.fix.push(...f);
+ add("bot",f.length?"Good try! 💡 "+f[0]:["Great answer! 🌟","Nice! 👏","Very good! 😊"][CH.n%3]);
+ CH.n++;setTimeout(()=>CH.n<Q.length?tutor():chatEnd(),1000)}
+function chatEnd(){st.chats++;save();const avg=CH.words/Q.length,fx=[...new Set(CH.fix)];
+ const d=document.createElement("div");d.className="card";
+ d.innerHTML=`<b>📝 Tu feedback</b><p>💪 <b>Fortalezas:</b> respondiste las 5 preguntas${avg>=5?" con frases largas":""}${fx.length==0?" y sin errores comunes":""}.</p>
+ <p>🎯 <b>Por mejorar:</b></p>${fx.map(x=>`<p>• ${x}</p>`).join("")}${CH.short>1?"<p>• Usa frases completas: “My name is…”, “I like…”.</p>":""}${!fx.length&&CH.short<=1?"<p>• ¡Nada importante! Prueba con frases más largas.</p>":""}
+ <button class="btn" onclick="chatStart()">Practicar otra vez</button>`;
+ $("#msgs").appendChild(d);d.scrollIntoView({block:"nearest"})}
+
+/* Progreso */
+function prog(){const ks=Object.keys(SK),dn=Object.keys(st.done).length;
+ R(`<h1>Mi progreso 📊</h1><div class="card"><p>✅ Lecciones completadas: <b>${dn} de ${L.length}</b></p><p>🎙️ Conversaciones: <b>${st.chats}</b></p></div>
+ <div class="card"><b>Habilidades acumuladas</b>${ks.map(k=>{const v=st.sk[k],p=v?Math.round(v[0]/v[1]*100):0;return `<div class="sk">${SK[k]} · ${v?p+"%":"sin datos"}${pb(p/100)}</div>`}).join("")}</div>
+ <button class="btn sec" onclick="st={done:{},sk:{},chats:0};save();prog()">Borrar mi progreso</button>`)}
+home();
+</script>
+</body>
+</html>
