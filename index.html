@@ -95,8 +95,8 @@ function listen(ok,fail){const SR=window.SpeechRecognition||window.webkitSpeechR
 
 const R=h=>{$("#app").innerHTML=h;window.scrollTo(0,0)};
 const pb=p=>`<div class="pb"><i style="width:${Math.round(p*100)}%"></i></div>`;
-const top=p=>`<div class="top"><button class="x" aria-label="Salir" onclick="nav('home')">✕</button>${pb(p)}</div>`;
-function nav(t){document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t==t));speechSynthesis&&speechSynthesis.cancel();({home,chat:chatStart,prog})[t]()}
+const topbar=p=>`<div class="top"><button class="x" aria-label="Salir" onclick="nav('home')">✕</button>${pb(p)}</div>`;
+function nav(t){document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t==t));try{window.speechSynthesis.cancel()}catch(e){}({home,chat:chatStart,prog})[t]()}
 
 /* Inicio */
 function home(){
@@ -119,20 +119,20 @@ function build(i){const l=L[i],all=l.w.map(w=>w[0]),qs=[];
  sh(l.w).slice(0,2).forEach(w=>qs.push({sk:"pron",w:w[0],ipa:w[1],es:w[2],big:w[3]}));
  return qs}
 function learn(k){const w=L[S.i].w[k];
- R(`${top(k/TOTAL)}<div class="card center"><p class="mu">Palabra ${k+1} de 4</p><div class="big">${w[3]}</div><h2>${w[0]}</h2><div class="ipa">${w[1]}</div><p class="mu">${w[2]}</p>
+ R(`${topbar(k/TOTAL)}<div class="card center"><p class="mu">Palabra ${k+1} de 4</p><div class="big">${w[3]}</div><h2>${w[0]}</h2><div class="ipa">${w[1]}</div><p class="mu">${w[2]}</p>
  <button class="btn sec" onclick="speak(L[S.i].w[${k}][0])">🔊 Escuchar</button></div>
  <button class="btn" onclick="${k<3?`learn(${k+1})`:"gram()"}">Siguiente →</button>`);speak(w[0])}
 function gram(){const g=L[S.i].g;
- R(`${top(4/TOTAL)}<h2>${g.t}</h2><div class="card"><p>${g.r}</p>
+ R(`${topbar(4/TOTAL)}<h2>${g.t}</h2><div class="card"><p>${g.r}</p>
  ${g.ex.map((e,j)=>`<div class="ex"><div><b>${e[0]}</b><br><span class="ipa" style="font-size:1rem">${e[1]}</span><br><span class="mu">${e[2]}</span></div><button class="snd" aria-label="Escuchar" onclick="speak(L[S.i].g.ex[${j}][0])">🔊</button></div>`).join("")}
  <div class="tip">🗣️ <b>Fonética:</b> ${g.ph}</div></div>
  <button class="btn" onclick="showQ()">Ir a practicar →</button>`)}
 function showQ(){const q=S.qs[S.k],p=(5+S.k)/TOTAL,n=`${S.k+1}/${S.qs.length}`;
  if(q.sk=="pron"){
-  R(`${top(p)}<div class="card center"><p class="mu">${n} · Pronunciación</p><div class="big">${q.big}</div><h2>${q.w}</h2><div class="ipa">${q.ipa}</div><p class="mu">${q.es}</p>
+  R(`${topbar(p)}<div class="card center"><p class="mu">${n} · Pronunciación</p><div class="big">${q.big}</div><h2>${q.w}</h2><div class="ipa">${q.ipa}</div><p class="mu">${q.es}</p>
   <button class="btn sec" onclick="speak(S.qs[S.k].w)">🔊 Escuchar el modelo</button>
   <button class="btn" id="mb" onclick="say()">🎤 Toca y di la palabra</button></div><div id="fb"></div>`);return}
- R(`${top(p)}<div class="card center"><p class="mu">${n} · ${SK[q.sk]}</p>${q.big?`<div class="big">${q.big}</div>`:""}<h2>${q.p}</h2>
+ R(`${topbar(p)}<div class="card center"><p class="mu">${n} · ${SK[q.sk]}</p>${q.big?`<div class="big">${q.big}</div>`:""}<h2>${q.p}</h2>
  ${q.au?`<button class="btn sec" onclick="speak(S.qs[S.k].au)">🔊 Escuchar otra vez</button>`:""}</div>
  ${q.o.map((o,j)=>`<button class="opt" onclick="ans(${j})">${o}</button>`).join("")}<div id="fb"></div>`);
  if(q.au)speak(q.au)}
@@ -143,8 +143,8 @@ function ans(j){const q=S.qs[S.k],ok=q.o[j]==q.a;
  rec(ok);fbShow(ok,ok?"✅ ¡Correcto!":`❌ La respuesta era “${q.a}”.`)}
 function say(){const q=S.qs[S.k];$("#mb").textContent="🎧 Escuchando… habla ahora";
  listen(t=>{const ok=norm(t).includes(norm(q.w));rec(ok);fbShow(ok,ok?"✅ ¡Muy bien! Te entendí claro.":`🔁 Escuché “${t}”. Escucha el modelo y compara los sonidos.`)},
- ()=>{$("#fb").innerHTML=`<div class="fb">No pude usar el micrófono. Tú decides: ¿cómo te sonó?</div><button class="btn" onclick="self(true)">😊 Lo dije bien</button><button class="btn sec" onclick="self(false)">😕 Necesito practicar</button>`})}
-function self(ok){rec(ok);fbShow(ok,ok?"👍 ¡Genial!":"💪 ¡Sigue practicando, vas bien!")}
+ ()=>{$("#fb").innerHTML=`<div class="fb">No pude usar el micrófono. Tú decides: ¿cómo te sonó?</div><button class="btn" onclick="selfRate(true)">😊 Lo dije bien</button><button class="btn sec" onclick="selfRate(false)">😕 Necesito practicar</button>`})}
+function selfRate(ok){rec(ok);fbShow(ok,ok?"👍 ¡Genial!":"💪 ¡Sigue practicando, vas bien!")}
 function nextQ(){S.k++;S.k<S.qs.length?showQ():finish()}
 
 /* Feedback final */
