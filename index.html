@@ -54,6 +54,7 @@ h2{font-size:1.4rem;margin:.4em 0}
 .mic.on{animation:pulse 1s infinite}
 @keyframes pulse{50%{transform:scale(1.1)}}
 @media(prefers-reduced-motion:reduce){.mic.on{animation:none}}
+.chip{display:inline-block;width:auto;margin:4px;padding:10px 14px}.stats{display:flex;gap:10px}.stats div{flex:1;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:10px;text-align:center}.sent{min-height:56px;border-bottom:2px dashed var(--bd);padding:8px;font-size:1.2rem}.di{width:100%;padding:12px;border-radius:12px;border:2px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;font-size:1.2rem;margin-top:10px}
 nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px)}
 nav button{flex:1;border:0;background:none;color:var(--mu);padding:10px 4px;font:inherit;font-size:.85rem;cursor:pointer}
 nav button i{display:block;font-style:normal;font-size:1.5rem}
@@ -73,7 +74,7 @@ const sh=a=>[...a].sort(()=>Math.random()-.5);
 const norm=s=>s.toLowerCase().replace(/[^a-z ]/g,"").trim();
 const SK={vocab:"Vocabulario",listening:"Comprensión auditiva",grammar:"Gramática",pron:"Pronunciación"};
 const TIPS={vocab:"Repasa las tarjetas y di cada palabra en voz alta.",listening:"Escucha cada palabra tres veces antes de contestar.",grammar:"Relee la regla y lee los ejemplos con su fonética.",pron:"Escucha el modelo, imita la posición de la boca y repite despacio."};
-let st={done:{},sk:{},chats:0};
+let st={done:{},sk:{},chats:0,xp:0,streak:0,last:0,weak:{}};
 try{st=Object.assign(st,JSON.parse(localStorage.getItem("ee1")||"{}"))}catch(e){}
 const save=()=>{try{localStorage.setItem("ee1",JSON.stringify(st))}catch(e){}};
 
@@ -84,9 +85,29 @@ const L=[
 {t:"Comida",e:"🍎",w:[["Apple","/ˈæpəl/","Manzana","🍎"],["Water","/ˈwɔːtər/","Agua","💧"],["Bread","/brɛd/","Pan","🍞"],["Chicken","/ˈtʃɪkɪn/","Pollo","🍗"]],
  g:{t:"I like / I don’t like",r:"Usa <b>I like</b> + cosa. Para negar usa <b>I don’t like</b> (nunca “I no like”).",ex:[["I like apples.","/aɪ laɪk ˈæpəlz/","Me gustan las manzanas."],["I don’t like bread.","/aɪ doʊnt laɪk brɛd/","No me gusta el pan."]],ph:"En <b>like</b> el sonido /aɪ/ es un diptongo: una “a” que se desliza hacia “i”.",q:[["I ___ like water.",["don’t","no","not"],"don’t"],["I ___ chicken.",["like","likes","liking"],"like"]]}},
 {t:"Rutina diaria",e:"⏰",w:[["Wake up","/weɪk ʌp/","Despertar","⏰"],["Work","/wɜːrk/","Trabajar","💼"],["Eat","/iːt/","Comer","🍽️"],["Sleep","/sliːp/","Dormir","😴"]],
- g:{t:"He / She + verbo con -s",r:"Con <b>he, she, it</b> el verbo lleva <b>-s</b>: she work<b>s</b>. Con I, you, we, they no.",ex:[["She works every day.","/ʃi wɜːrks ˈɛvri deɪ/","Ella trabaja todos los días."],["I sleep at ten.","/aɪ sliːp æt tɛn/","Yo duermo a las diez."]],ph:"La <b>-s</b> final suena /s/ en “works” /wɜːrks/. ¡No la omitas al hablar!",q:[["She ___ every day.",["works","work","working"],"works"],["I ___ at seven.",["wake up","wakes up","waking up"],"wake up"]]}}
+ g:{t:"He / She + verbo con -s",r:"Con <b>he, she, it</b> el verbo lleva <b>-s</b>: she work<b>s</b>. Con I, you, we, they no.",ex:[["She works every day.","/ʃi wɜːrks ˈɛvri deɪ/","Ella trabaja todos los días."],["I sleep at ten.","/aɪ sliːp æt tɛn/","Yo duermo a las diez."]],ph:"La <b>-s</b> final suena /s/ en “works” /wɜːrks/. ¡No la omitas al hablar!",q:[["She ___ every day.",["works","work","working"],"works"],["I ___ at seven.",["wake up","wakes up","waking up"],"wake up"]]}},
+{t:"Viajes",e:"✈️",w:[["Airport","/ˈɛrpɔːrt/","Aeropuerto","✈️"],["Ticket","/ˈtɪkɪt/","Boleto","🎫"],["Hotel","/hoʊˈtɛl/","Hotel","🏨"],["Map","/mæp/","Mapa","🗺️"]],
+ g:{t:"Where is…?",r:"Para preguntar por un lugar usa <b>Where is</b> + lugar.",ex:[["Where is the airport?","/wɛr ɪz ðə ˈɛrpɔːrt/","¿Dónde está el aeropuerto?"],["Where is my ticket?","/wɛr ɪz maɪ ˈtɪkɪt/","¿Dónde está mi boleto?"]],ph:"La <b>h</b> de “hotel” se aspira: sale un soplo suave de aire, como una “j” muy ligera.",q:[["___ is the hotel?",["Where","Who","What"],"Where"],["Where ___ the map?",["is","am","are"],"is"]]}},
+{t:"Restaurante",e:"🍽️",w:[["Menu","/ˈmɛnjuː/","Menú","📋"],["Coffee","/ˈkɔːfi/","Café","☕"],["Bill","/bɪl/","Cuenta","🧾"],["Waiter","/ˈweɪtər/","Mesero","🧑‍🍳"]],
+ g:{t:"I would like…",r:"Para pedir con cortesía usa <b>I would like</b> (corto: <b>I’d like</b>).",ex:[["I would like a coffee.","/aɪ wʊd laɪk ə ˈkɔːfi/","Quisiera un café."],["I’d like the bill, please.","/aɪd laɪk ðə bɪl pliːz/","Quisiera la cuenta, por favor."]],ph:"En <b>would</b> la “l” no se pronuncia: suena /wʊd/.",q:[["I ___ like a coffee.",["would","do","am"],"would"],["The ___, please.",["bill","bills","billing"],"bill"]]}},
+{t:"Familia",e:"👨‍👩‍👧",w:[["Mother","/ˈmʌðər/","Madre","👩"],["Father","/ˈfɑːðər/","Padre","👨"],["Sister","/ˈsɪstər/","Hermana","👧"],["Brother","/ˈbrʌðər/","Hermano","👦"]],
+ g:{t:"My / Your",r:"<b>My</b> = mi, <b>your</b> = tu. Van antes del sustantivo.",ex:[["My mother is nice.","/maɪ ˈmʌðər ɪz naɪs/","Mi madre es amable."],["Your brother is tall.","/jʊr ˈbrʌðər ɪz tɔːl/","Tu hermano es alto."]],ph:"La <b>th</b> de “mother” es suave /ð/: lengua entre los dientes y la voz vibra.",q:[["___ sister is Ana.",["My","I","Me"],"My"],["___ father is here.",["Your","You","Yours"],"Your"]]}},
+{t:"Trabajo",e:"💼",w:[["Office","/ˈɔːfɪs/","Oficina","🏢"],["Boss","/bɔːs/","Jefe","🧑‍💼"],["Meeting","/ˈmiːtɪŋ/","Reunión","🤝"],["Computer","/kəmˈpjuːtər/","Computadora","💻"]],
+ g:{t:"Can / Can’t",r:"<b>Can</b> = poder o saber. Sin -s y sin “to”: she can work.",ex:[["I can use a computer.","/aɪ kæn juːz ə kəmˈpjuːtər/","Sé usar una computadora."],["She can’t come.","/ʃi kænt kʌm/","Ella no puede venir."]],ph:"<b>Can</b> suena débil /kən/ dentro de la frase; <b>can’t</b> suena fuerte /kænt/.",q:[["I ___ speak English.",["can","cans","to can"],"can"],["She ___ work today.",["can’t","don’t can","no can"],"can’t"]]}},
+{t:"Compras",e:"🛍️",w:[["Shirt","/ʃɜːrt/","Camisa","👕"],["Shoes","/ʃuːz/","Zapatos","👟"],["Price","/praɪs/","Precio","🏷️"],["Cheap","/tʃiːp/","Barato","💸"]],
+ g:{t:"How much is…?",r:"Para precios usa <b>How much is</b> (uno) o <b>How much are</b> (varios).",ex:[["How much is the shirt?","/haʊ mʌtʃ ɪz ðə ʃɜːrt/","¿Cuánto cuesta la camisa?"],["How much are the shoes?","/haʊ mʌtʃ ɑːr ðə ʃuːz/","¿Cuánto cuestan los zapatos?"]],ph:"<b>sh</b> /ʃ/ suena como pedir silencio: “shhh”. La <b>ch</b> de “cheap” /tʃ/ es como en español.",q:[["How much ___ the shirt?",["is","are","am"],"is"],["How much ___ the shoes?",["are","is","be"],"are"]]}},
+{t:"Salud",e:"🩺",w:[["Doctor","/ˈdɑːktər/","Doctor","🩺"],["Headache","/ˈhɛdeɪk/","Dolor de cabeza","🤕"],["Medicine","/ˈmɛdɪsɪn/","Medicina","💊"],["Tired","/ˈtaɪərd/","Cansado","🥱"]],
+ g:{t:"I have a… / I feel…",r:"Para síntomas usa <b>I have a</b> + dolor, o <b>I feel</b> + cómo te sientes.",ex:[["I have a headache.","/aɪ hæv ə ˈhɛdeɪk/","Tengo dolor de cabeza."],["I feel tired.","/aɪ fiːl ˈtaɪərd/","Me siento cansado."]],ph:"En <b>feel</b> la vocal es larga /iː/, distinta a la de “fill” /ɪ/.",q:[["I ___ a headache.",["have","am","feel"],"have"],["I ___ tired.",["feel","have","do"],"feel"]]}}
 ];
-const TOTAL=15; let S=null,CH=null;
+const off=()=>S.i<0?0:5,T=()=>off()+S.qs.length;let S=null,CH=null;
+const day=()=>Math.floor(Date.now()/864e5),INT=[1,3,7,14];
+const stk=()=>st.last>=day()-1?st.streak:0;
+const info=en=>{for(const l of L){const w=l.w.find(x=>x[0]==en);if(w)return w}};
+function bump(){const d=day();if(st.last===d)return;st.streak=st.last===d-1?(st.streak||0)+1:1;st.last=d}
+function sr(w,ok){const e=st.weak[w];if(!ok){if(info(w))st.weak[w]={n:0,due:day()+1}}else if(e){e.n++;if(e.n>=INT.length)delete st.weak[w];else e.due=day()+INT[e.n]}}
+const dueWords=()=>Object.keys(st.weak).filter(w=>st.weak[w].due<=day()&&info(w));
+function review(){const all=L.flatMap(l=>l.w),ws=sh(dueWords()).slice(0,6);
+ S={i:-1,k:0,res:[],qs:ws.map(en=>{const w=info(en);return {sk:"vocab",p:`¿Cómo se dice “${w[2]}” en inglés?`,big:w[3],o:sh([w[0],...sh(all.map(x=>x[0]).filter(x=>x!=w[0])).slice(0,2)]),a:w[0],w:w[0]}})};showQ()}
 
 /* Voz */
 function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
@@ -101,12 +122,12 @@ function nav(t){document.querySelectorAll("nav button").forEach(b=>b.classList.t
 /* Inicio */
 function home(){
  let n=L.findIndex((_,i)=>st.done[i]==null);if(n<0)n=0;
- R(`<h1>Hello! 👋</h1><p class="mu">Aprende inglés paso a paso. Es muy fácil:</p>
+ const due=dueWords();R(`<h1>Hello! 👋</h1><div class="stats"><div>🔥<br><b>${stk()}</b> días</div><div>⭐<br><b>${st.xp}</b> XP</div><div>🏅<br>Nivel <b>${Math.floor(st.xp/100)+1}</b></div></div><p class="mu">Aprende inglés paso a paso. Es muy fácil:</p>
  <div class="card"><div class="step"><span>1</span><div><b>Aprende</b><br>Mira, escucha y lee la fonética.</div></div>
  <div class="step"><span>2</span><div><b>Practica</b><br>Una actividad corta con voz.</div></div>
  <div class="step"><span>3</span><div><b>Mejora</b><br>Al final ves tus fortalezas y debilidades.</div></div></div>
  <button class="btn" onclick="start(${n})">${st.done[n]==null?"Empezar":"Repetir"}: ${L[n].t}</button>
- <h2>Todas las lecciones</h2>
+ ${due.length?`<button class="btn" style="background:var(--ac);color:#1f2a37" onclick="review()">🔁 Repaso del día: ${due.length} palabra${due.length>1?"s":""}</button>`:""}<h2>Todas las lecciones</h2>
  ${L.map((l,i)=>`<button class="card lesson" onclick="start(${i})"><span class="em">${l.e}</span><span><b>${l.t}</b><br><small>${st.done[i]!=null?"✅ Mejor resultado: "+st.done[i]+"%":"Sin empezar"}</small></span></button>`).join("")}
  <button class="card lesson" onclick="nav('chat')"><span class="em">🎙️</span><span><b>Conversa con tu tutor</b><br><small>Habla o escribe en inglés</small></span></button>`)}
 
@@ -116,18 +137,24 @@ function build(i){const l=L[i],all=l.w.map(w=>w[0]),qs=[];
  l.w.forEach(w=>qs.push({sk:"vocab",p:`¿Cómo se dice “${w[2]}” en inglés?`,big:w[3],o:sh([w[0],...sh(all.filter(x=>x!=w[0])).slice(0,2)]),a:w[0],w:w[0]}));
  sh(l.w).slice(0,2).forEach(w=>qs.push({sk:"listening",p:"Escucha y elige el significado",au:w[0],o:sh([w[2],...sh(l.w.map(x=>x[2]).filter(x=>x!=w[2])).slice(0,2)]),a:w[2],w:w[0]}));
  l.g.q.forEach(q=>qs.push({sk:"grammar",p:q[0],o:sh(q[1]),a:q[2],w:q[2]}));
+ const e=l.g.ex[1][0],dw=sh(l.w)[0];
+ qs.push({sk:"grammar",t:"order",p:"Ordena las palabras para formar la frase",es:l.g.ex[1][2],ws:sh(e.replace(/[.?!]/g,"").split(" ")),a:e,w:e});
+ qs.push({sk:"listening",t:"dict",p:"Escucha y escribe lo que oyes",au:dw[0],w:dw[0],a:dw[0]});
  sh(l.w).slice(0,2).forEach(w=>qs.push({sk:"pron",w:w[0],ipa:w[1],es:w[2],big:w[3]}));
  return qs}
 function learn(k){const w=L[S.i].w[k];
- R(`${topbar(k/TOTAL)}<div class="card center"><p class="mu">Palabra ${k+1} de 4</p><div class="big">${w[3]}</div><h2>${w[0]}</h2><div class="ipa">${w[1]}</div><p class="mu">${w[2]}</p>
+ R(`${topbar(k/T())}<div class="card center"><p class="mu">Palabra ${k+1} de 4</p><div class="big">${w[3]}</div><h2>${w[0]}</h2><div class="ipa">${w[1]}</div><p class="mu">${w[2]}</p>
  <button class="btn sec" onclick="speak(L[S.i].w[${k}][0])">🔊 Escuchar</button></div>
  <button class="btn" onclick="${k<3?`learn(${k+1})`:"gram()"}">Siguiente →</button>`);speak(w[0])}
 function gram(){const g=L[S.i].g;
- R(`${topbar(4/TOTAL)}<h2>${g.t}</h2><div class="card"><p>${g.r}</p>
+ R(`${topbar(4/T())}<h2>${g.t}</h2><div class="card"><p>${g.r}</p>
  ${g.ex.map((e,j)=>`<div class="ex"><div><b>${e[0]}</b><br><span class="ipa" style="font-size:1rem">${e[1]}</span><br><span class="mu">${e[2]}</span></div><button class="snd" aria-label="Escuchar" onclick="speak(L[S.i].g.ex[${j}][0])">🔊</button></div>`).join("")}
  <div class="tip">🗣️ <b>Fonética:</b> ${g.ph}</div></div>
  <button class="btn" onclick="showQ()">Ir a practicar →</button>`)}
-function showQ(){const q=S.qs[S.k],p=(5+S.k)/TOTAL,n=`${S.k+1}/${S.qs.length}`;
+function showQ(){const q=S.qs[S.k],p=(off()+S.k)/T(),n=`${S.k+1}/${S.qs.length}`;
+ S.sel=[];
+ if(q.t=="order"){R(`${topbar(p)}<div class="card center"><p class="mu">${n} · Gramática</p><h2>${q.p}</h2><p class="mu">${q.es}</p><div class="sent" id="os"></div></div><div id="ob" class="center"></div><button class="btn sec" onclick="S.sel.pop();ordView()">↩ Borrar la última</button><button class="btn" onclick="chkO()">Comprobar</button><div id="fb"></div>`);ordView();return}
+ if(q.t=="dict"){R(`${topbar(p)}<div class="card center"><p class="mu">${n} · Comprensión auditiva</p><h2>${q.p}</h2><button class="btn sec" onclick="speak(S.qs[S.k].au)">🔊 Escuchar otra vez</button><input class="di" id="di" autocomplete="off" placeholder="Escribe aquí…" onkeydown="if(event.key=='Enter')chkD()"></div><button class="btn" onclick="chkD()">Comprobar</button><div id="fb"></div>`);speak(q.au);return}
  if(q.sk=="pron"){
   R(`${topbar(p)}<div class="card center"><p class="mu">${n} · Pronunciación</p><div class="big">${q.big}</div><h2>${q.w}</h2><div class="ipa">${q.ipa}</div><p class="mu">${q.es}</p>
   <button class="btn sec" onclick="speak(S.qs[S.k].w)">🔊 Escuchar el modelo</button>
@@ -137,7 +164,7 @@ function showQ(){const q=S.qs[S.k],p=(5+S.k)/TOTAL,n=`${S.k+1}/${S.qs.length}`;
  ${q.o.map((o,j)=>`<button class="opt" onclick="ans(${j})">${o}</button>`).join("")}<div id="fb"></div>`);
  if(q.au)speak(q.au)}
 function fbShow(ok,msg){$("#fb").innerHTML=`<div class="fb ${ok?"ok":"bad"}">${msg}</div><button class="btn" onclick="nextQ()">Continuar →</button>`}
-function rec(ok){const q=S.qs[S.k];S.res.push({sk:q.sk,ok,w:q.w})}
+function rec(ok){const q=S.qs[S.k];if(S.lk===S.k)return;S.lk=S.k;S.res.push({sk:q.sk,ok,w:q.w})}
 function ans(j){const q=S.qs[S.k],ok=q.o[j]==q.a;
  document.querySelectorAll(".opt").forEach((b,x)=>{b.disabled=true;if(q.o[x]==q.a)b.classList.add("ok");else if(x==j)b.classList.add("bad")});
  rec(ok);fbShow(ok,ok?"✅ ¡Correcto!":`❌ La respuesta era “${q.a}”.`)}
@@ -146,21 +173,24 @@ function say(){const q=S.qs[S.k];$("#mb").textContent="🎧 Escuchando… habla 
  ()=>{$("#fb").innerHTML=`<div class="fb">No pude usar el micrófono. Tú decides: ¿cómo te sonó?</div><button class="btn" onclick="selfRate(true)">😊 Lo dije bien</button><button class="btn sec" onclick="selfRate(false)">😕 Necesito practicar</button>`})}
 function selfRate(ok){rec(ok);fbShow(ok,ok?"👍 ¡Genial!":"💪 ¡Sigue practicando, vas bien!")}
 function nextQ(){S.k++;S.k<S.qs.length?showQ():finish()}
+function ordView(){const q=S.qs[S.k];$("#ob").innerHTML=q.ws.map((w,j)=>`<button class="opt chip" ${S.sel.includes(j)?"disabled":""} onclick="S.sel.push(${j});ordView()">${w}</button>`).join("");$("#os").textContent=S.sel.map(j=>q.ws[j]).join(" ")||"…"}
+function chkO(){const q=S.qs[S.k],ok=norm(S.sel.map(j=>q.ws[j]).join(" "))==norm(q.a);rec(ok);fbShow(ok,ok?"✅ ¡Correcto!":`❌ Era: “${q.a}”`)}
+function chkD(){const q=S.qs[S.k],ok=norm($("#di").value)==norm(q.a);rec(ok);fbShow(ok,ok?"✅ ¡Correcto!":`❌ Era “${q.a}”.`)}
 
 /* Feedback final */
 function finish(){const by={};S.res.forEach(r=>{by[r.sk]=by[r.sk]||[0,0];by[r.sk][1]++;if(r.ok)by[r.sk][0]++;
   st.sk[r.sk]=st.sk[r.sk]||[0,0];st.sk[r.sk][1]++;if(r.ok)st.sk[r.sk][0]++});
  const all=S.res.length,good=S.res.filter(r=>r.ok).length,tot=Math.round(good/all*100);
- st.done[S.i]=Math.max(st.done[S.i]||0,tot);save();
+ if(S.i>=0)st.done[S.i]=Math.max(st.done[S.i]||0,tot);const gain=good*10;st.xp+=gain;bump();S.res.forEach(r=>sr(r.w,r.ok));save();
  const ks=Object.keys(by),pc=k=>Math.round(by[k][0]/by[k][1]*100);
  const fort=ks.filter(k=>pc(k)>=80),deb=ks.filter(k=>pc(k)<80);
  const miss=[...new Set(S.res.filter(r=>!r.ok).map(r=>r.w))];
- R(`<div class="card center"><div class="big">${tot>=80?"🏆":tot>=50?"👍":"💪"}</div><h1>${tot}%</h1><p class="mu">${tot>=80?"¡Excelente trabajo!":tot>=50?"¡Buen avance!":"¡Cada intento te hace mejor!"}</p></div>
+ R(`<div class="card center"><div class="big">${tot>=80?"🏆":tot>=50?"👍":"💪"}</div><h1>${tot}%</h1><p class="mu">${tot>=80?"¡Excelente trabajo!":tot>=50?"¡Buen avance!":"¡Cada intento te hace mejor!"}</p><p><b>+${gain} XP ⭐</b> · 🔥 Racha: ${stk()} ${stk()==1?"día":"días"}</p></div>
  <div class="card"><b>Tus habilidades</b>${ks.map(k=>`<div class="sk">${SK[k]} · ${pc(k)}%${pb(pc(k)/100)}</div>`).join("")}</div>
  <div class="card"><b>💪 Fortalezas</b>${fort.length?fort.map(k=>`<p>✔ Dominas <b>${SK[k].toLowerCase()}</b> (${pc(k)}%).</p>`).join(""):"<p>Todavía estás empezando: ¡completaste la actividad y eso cuenta!</p>"}</div>
  <div class="card"><b>🎯 Debilidades por mejorar</b>${deb.length?deb.map(k=>`<p>• <b>${SK[k]}</b>: ${TIPS[k]}</p>`).join(""):"<p>¡No hay debilidades en esta lección!</p>"}${miss.length?`<div class="tip">Repasa: ${miss.join(", ")}</div>`:""}</div>
- ${S.i<L.length-1?`<button class="btn" onclick="start(${S.i+1})">Siguiente lección →</button>`:""}
- <button class="btn sec" onclick="start(${S.i})">Repetir lección</button><button class="btn sec" onclick="nav('home')">Volver al inicio</button>`)}
+ ${S.i>=0&&S.i<L.length-1?`<button class="btn" onclick="start(${S.i+1})">Siguiente lección →</button>`:""}
+ ${S.i>=0?`<button class="btn sec" onclick="start(${S.i})">Repetir lección</button>`:""}<button class="btn sec" onclick="nav('home')">Volver al inicio</button>`)}
 
 /* Chat con tutor */
 const Q=[["Hi! What’s your name?","¡Hola! ¿Cómo te llamas?"],["Where are you from?","¿De dónde eres?"],["What do you like to eat?","¿Qué te gusta comer?"],["What do you do every day?","¿Qué haces cada día?"],["Why are you learning English?","¿Por qué aprendes inglés?"]];
@@ -181,7 +211,7 @@ function userSay(t){t=t.trim();if(!t||CH.n>=Q.length)return;add("me",t);
  const f=RULES.filter(r=>r[0].test(t)).map(r=>r[1]);CH.fix.push(...f);
  add("bot",f.length?"Good try! 💡 "+f[0]:["Great answer! 🌟","Nice! 👏","Very good! 😊"][CH.n%3]);
  CH.n++;setTimeout(()=>CH.n<Q.length?tutor():chatEnd(),1000)}
-function chatEnd(){st.chats++;save();const avg=CH.words/Q.length,fx=[...new Set(CH.fix)];
+function chatEnd(){st.chats++;st.xp+=30;bump();save();const avg=CH.words/Q.length,fx=[...new Set(CH.fix)];
  const d=document.createElement("div");d.className="card";
  d.innerHTML=`<b>📝 Tu feedback</b><p>💪 <b>Fortalezas:</b> respondiste las 5 preguntas${avg>=5?" con frases largas":""}${fx.length==0?" y sin errores comunes":""}.</p>
  <p>🎯 <b>Por mejorar:</b></p>${fx.map(x=>`<p>• ${x}</p>`).join("")}${CH.short>1?"<p>• Usa frases completas: “My name is…”, “I like…”.</p>":""}${!fx.length&&CH.short<=1?"<p>• ¡Nada importante! Prueba con frases más largas.</p>":""}
@@ -190,9 +220,9 @@ function chatEnd(){st.chats++;save();const avg=CH.words/Q.length,fx=[...new Set(
 
 /* Progreso */
 function prog(){const ks=Object.keys(SK),dn=Object.keys(st.done).length;
- R(`<h1>Mi progreso 📊</h1><div class="card"><p>✅ Lecciones completadas: <b>${dn} de ${L.length}</b></p><p>🎙️ Conversaciones: <b>${st.chats}</b></p></div>
+ R(`<h1>Mi progreso 📊</h1><div class="card"><p>✅ Lecciones completadas: <b>${dn} de ${L.length}</b></p><p>🎙️ Conversaciones: <b>${st.chats}</b></p><p>🔥 Racha: <b>${stk()}</b> días · ⭐ <b>${st.xp}</b> XP · 🔁 Por repasar: <b>${Object.keys(st.weak).length}</b> palabras</p><p>🏅 ${[["🥉","Primera lección",dn>=1],["🥈","3 lecciones",dn>=3],["🥇","Todas las lecciones",dn>=L.length],["🔥","Racha de 3 días",stk()>=3]].map(m=>`<span title="${m[1]}" style="opacity:${m[2]?1:.3}">${m[0]} ${m[1]}</span>`).join(" · ")}</p></div>
  <div class="card"><b>Habilidades acumuladas</b>${ks.map(k=>{const v=st.sk[k],p=v?Math.round(v[0]/v[1]*100):0;return `<div class="sk">${SK[k]} · ${v?p+"%":"sin datos"}${pb(p/100)}</div>`}).join("")}</div>
- <button class="btn sec" onclick="st={done:{},sk:{},chats:0};save();prog()">Borrar mi progreso</button>`)}
+ <button class="btn sec" onclick="st={done:{},sk:{},chats:0,xp:0,streak:0,last:0,weak:{}};save();prog()">Borrar mi progreso</button>`)}
 home();
 </script>
 </body>
